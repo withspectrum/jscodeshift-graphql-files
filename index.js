@@ -11,15 +11,19 @@ const hasGraphQLComment = node =>
   );
 
 // Create a GraphQL file with the contents of a node at some path
-const createGraphQLFile = (path, node) => {
+const createGraphQLFile = (path, node, { dry }) => {
   if (node.value.quasis.length > 1)
     throw new Error(
-      `GraphQL Template Literal at line ${node.value.quasis[0].loc.start
-        .line} has interpolations, (at line ${node.value.quasis[0].loc.end
-        .line}?) aborting.`
+      `[GraphQL Files] GraphQL Template Literal at line ${node.value.quasis[0]
+        .loc.start.line} has interpolations, (at line ${node.value.quasis[0].loc
+        .end.line}?) aborting.`
     );
 
   const { value: { raw } } = node.value.quasis[0];
+  if (dry) {
+    console.log(`[GraphQL Files] Would create ${path}.`);
+    return;
+  }
   fs.writeFileSync(path, raw);
 };
 
@@ -34,9 +38,12 @@ module.exports = (fileInfo, api, options) => {
 
   // If there's none, bail out early
   if (nodes.length === 0) return;
+  if (options.dry) {
+    console.log(`[GraphQL Files] Found GraphQL template literals in ${path}.`);
+  }
   // If there's one, just output it at file.graphql
   if (nodes.length === 1) {
-    nodes.forEach(node => createGraphQLFile(filePath, node));
+    nodes.forEach(node => createGraphQLFile(filePath, node, options));
     return;
   }
 
@@ -44,7 +51,8 @@ module.exports = (fileInfo, api, options) => {
   nodes.forEach((node, index) => {
     createGraphQLFile(
       filePath.replace(/\.graphql$/, `-${index}.graphql`),
-      node
+      node,
+      options
     );
   });
   return;

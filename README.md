@@ -4,7 +4,7 @@ Transform a `.js` file with GraphQL tagged template literals into `.graphql` fil
 
 ## Example
 
-This JSCodeshift turns this file:
+This codemod turns this file:
 
 ```javascript
 // User.js
@@ -24,6 +24,8 @@ type User {
 }
 ```
 
+> Note: It does so indistructively, it doesn't touch the original `.js` files at all. :warning: It will override an existing User.graphql file though!
+
 ## Usage
 
 ```sh
@@ -33,7 +35,9 @@ git clone git@github.com:withspectrum/jscodeshift-graphql-files
 npm i -g jscodeshift
 
 # Run jscodeshift with the transform on a directory
-jscodeshift -t ./jscodeshift-graphql-files/index.js some-dir-with-graphql-types/
+# Note the --dry option, this means we'll only log which files would be output
+jscodeshift -t ./jscodeshift-graphql-files/index.js some-dir-with-graphql-types/ --dry
+# If you're happy with the resulting files do a real run without the --dry option!
 ```
 
 ## License
