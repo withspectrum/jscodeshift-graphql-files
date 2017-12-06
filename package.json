@@ -1,0 +1,25 @@
+{
+  "name": "jscodeshift-graphql-files",
+  "version": "1.0.0",
+  "description": "Transform .js files with GraphQL template literals to .graphql files",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/withspectrum/jscodeshift-graphql-files.git"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write --single-quote --trailing-comma es5",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^4.2.2",
+    "prettier": "^1.7.0"
+  }
+}
